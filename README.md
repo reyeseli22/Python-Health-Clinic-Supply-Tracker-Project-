@@ -21,8 +21,12 @@ A: COMMAND,item name,quantity,category
  ## Assumptions 
 - We are working with a large health clinic and need to treat the data accordingly
 - No value = Missing field
-- Valid Input = Line with 4 fields 
-- Each row = one supply count for one day
+- ADD = 4 fields(cmd, item, qty, cat)
+- Remove = 3 fields(no cat)
+- Search = 2 fields(cmd, item)
+- search wont change stock, only looks up an item >> what will we report when seached?
+- Each row = one transaction (ADD,RMV,SRCH)
+- Current stock = running total >> if qty <= running total print low stock
 - Priya's team will be accesing this data
 
 > They are not programmers
@@ -30,6 +34,7 @@ A: COMMAND,item name,quantity,category
 > Number of types of supplies and their totals each
 
 >The min, med, max and mean
+- We will need to use int() on quantity
 # For Now:
 - Low count is lower than 15
 
@@ -38,4 +43,24 @@ A: COMMAND,item name,quantity,category
 - duplicate rows may give us an innacurate measure of usage
 - ^ Can mess up the min, med, max and mean
 - if an int is required in a field but a str is provided it may break the code 
-- 
+- remove on that is more than whats in stock will result in negatives
+- Typos may result in skipped lines and or innacurate results
+- Because there is no category on remove or search we will have to match its cat with an earlier add to validate
+
+## Plan 
+1. Read the file into a list of lines
+2. Validate each line 
+- right number of fields
+- qty is an int < 0 (no negatives)
+3. Update stock for valid lines
+- ADD: += qty
+- Remove: -= qty
+4. Report all Bad lines (don't count)
+5. Find low stock
+- qty <= 15 
+- print("low stock", qty, cat)
+## What will hold the data?
+# Because we will need to look up an item by name we will use a dict {}
+- stock = {} >> item name, current count
+- categories = {} >> item name, category
+- bad_lines = [] >> rejected line and reason
