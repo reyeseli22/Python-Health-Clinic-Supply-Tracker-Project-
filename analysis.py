@@ -32,9 +32,25 @@ class Healthcare_Supply:
             if self.qty >= LOW_STOCK_LIMIT:
                 return False 
 
-med_gloves = Healthcare_Supply("Nitrile Exam Gloves (M)")
-lrg_gloves = Healthcare_Supply("Nitrile Exam Gloves (L)")
-        
+med_gloves = Healthcare_Supply("Nitrile Exam Gloves (M)",48,"PPE)")
+lrg_gloves = Healthcare_Supply("Nitrile Exam Gloves (L)",15,"PPE")
+# Two objects/instances
+# print("Before")
+# print("Medium Gloves: ", med_gloves.qty, med_gloves.is_low_stock())
+# print("Large Gloves: ", lrg_gloves.qty, lrg_gloves.is_low_stock())
+
+# lrg_gloves.qty = 5
+# med_gloves.qty = 15
+
+# print()
+# print("After")
+# print("Medium Gloves: ", med_gloves.qty, med_gloves.is_low_stock())
+# print("Large Gloves: ", lrg_gloves.qty, lrg_gloves.is_low_stock())
+# Testing methods
+
+
+
+
     # def almost_low_stock(self):
     #     """Validates if an item is near the low stock limit"""
     #     if self.qty < 20:
