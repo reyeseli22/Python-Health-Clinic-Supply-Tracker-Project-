@@ -5,8 +5,8 @@
 
 import json
 DATA = "/Users/Marcy_Student/Documents/Marcy/Python-Health-Clinic-Supply-Tracker-Project-/data/healthcare_transactions.txt"
-with open(DATA) as f:
-    lines = f.read().splitlines()
+
+
 # print(len(lines)) << Checking line count 
 # Lines in data = 430
 LOW_STOCK_LIMIT = 15
@@ -35,12 +35,12 @@ class Healthcare_Supply:
 med_gloves = Healthcare_Supply("Nitrile Exam Gloves (M)",48,"PPE")
 lrg_gloves = Healthcare_Supply("Nitrile Exam Gloves (L)",15,"PPE")
 # Two objects/instances
+
 # print("Before")
 # print("Medium Gloves: ", med_gloves.qty, med_gloves.is_low_stock())
 # print("Large Gloves: ", lrg_gloves.qty, lrg_gloves.is_low_stock())
 
 # lrg_gloves.qty = 5
-# med_gloves.qty = 15
 
 # print()
 # print("After")
@@ -65,11 +65,19 @@ def read_batch_file(filepath):
     ones you write below: what the function does, what it takes, and what
     it returns.
     """
+    with open(filepath) as f:
+        return f.read().splitlines
+
+lines = read_batch_file(DATA)
+
+print(len(lines))
+
     # TODO: implement
-    pass
+
 
 
 def validate_line(line):
+    """Decides whether a line is a valid ADD, REMOVE, or SEARCH"""
     """TODO: write your own docstring. What makes an ADD, REMOVE, or
     SEARCH line valid? What do you return for a valid line, and what for
     an invalid one?"""
