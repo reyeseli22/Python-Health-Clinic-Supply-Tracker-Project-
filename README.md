@@ -62,5 +62,3 @@ A: COMMAND,item name,quantity,category
 ## What will hold the data?
 # Because we will need to look up an item by name we will use a dict {}
 - stock = {} >> item name, current count
-- categories = {} >> item name, category
-- bad_lines = [] >> rejected line and reason

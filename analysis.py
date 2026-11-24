@@ -1,14 +1,7 @@
-"""
-Command-line inventory tracker -- you choose the scenario.
 
-See ../PROJECT_OVERVIEW.md to pick your stakeholder and data file. Design your own
-class for one inventory item, based on what *your* stakeholder needs.
-There's no single right set of attributes, and that's on purpose.
 
-Run it from your repo's top folder (not from inside this folder):
-    python3 starter/inventory.py
-Before your final push you'll rename this folder to analysis/.
-"""
+
+
 
 import json
 DATA = "/Users/Marcy_Student/Documents/Marcy/Python-Health-Clinic-Supply-Tracker-Project-/data/healthcare_transactions.txt"
@@ -39,6 +32,8 @@ class Healthcare_Supply:
             if self.qty >= LOW_STOCK_LIMIT:
                 return False 
 
+med_gloves = Healthcare_Supply("Nitrile Exam Gloves (M)")
+lrg_gloves = Healthcare_Supply("Nitrile Exam Gloves (L)")
         
     # def almost_low_stock(self):
     #     """Validates if an item is near the low stock limit"""
