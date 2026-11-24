@@ -4,6 +4,7 @@
 
 
 import json
+from wsgiref import validate
 DATA = "/Users/Marcy_Student/Documents/Marcy/Python-Health-Clinic-Supply-Tracker-Project-/data/healthcare_transactions.txt"
 
 
@@ -59,33 +60,66 @@ lrg_gloves = Healthcare_Supply("Nitrile Exam Gloves (L)",15,"PPE")
 
 def read_batch_file(filepath):
     """
-    Read the batch file at `filepath` and return a list of its lines
-    (strings), unchanged. Deciding whether a line is usable happens in
-    validate_line(), not here. Use this docstring as the model for the
-    ones you write below: what the function does, what it takes, and what
-    it returns.
+    Reads the file, and returns a list of lines
     """
     with open(DATA) as f:
         return f.read().splitlines()
 
-lines = read_batch_file(DATA)
+line = read_batch_file(DATA)
 
-print(len(lines))
-
-    # TODO: implement
-
+# print(len(lines))
+# Testing if read_batch_file reads data as expected 
 
 
 def validate_line(line):
-    """Decides whether a line is a valid ADD, REMOVE, or SEARCH"""
-    """TODO: write your own docstring. What makes an ADD, REMOVE, or
-    SEARCH line valid? What do you return for a valid line, and what for
+    """Decides whether a line is a valid ADD, REMOVE, or SEARCH."""
+    parts = line.split(",")
+    command = parts[0]
+
+    if command == "ADD" and len(parts) == 4:
+        try:
+            quantity = int(parts[2])
+        except ValueError:
+            return False, "qty is not a number"
+        if quantity < 0:
+            return False, "qty is negative"
+        if not parts[1].strip():
+            return False, "item name is blank"
+        if not parts[3].strip:
+            return False, "category blank"
+
+        
+    elif command == "REMOVE" and len(parts) == 3:
+        if not parts[1].strip():
+            return False, "item name is blank"
+        try:
+            quantity = int(parts[2])
+        except ValueError:
+            return False, "qty is not a number"
+        if quantity < 0:
+            return False, "qty is negative"
+    elif command == "SEARCH" and len(parts) == 2:
+        if not parts[1].strip():
+            return False, "item name is blank"
+    else:
+        return False, "unknown command or wrong field count"
+    return True, "Valid Input"
+
+print(validate_line("ADD,Hand Sanitizer 8oz,19,PPE"))
+print(validate_line("ADD,Compression Stockings,22,Wound Care"))
+print(validate_line("SEARCH,Surgical Face Masks"))
+print(validate_line("SEARCH,Urine Test Strips"))
+print(validate_line("REMOVE,Acetaminophen 500mg,3"))
+print(validate_line("REMOVE,Face Shields,5"))
+
+"""TODO: write your own docstring. What makes an ADD, REMOVE, or
+SEARCH line valid? What do you return for a valid line, and what for
     an invalid one?"""
     # TODO: implement. One choice worth making on purpose: a quantity can
     # be present but not a number ("five"). Wrap int(quantity) in a
     # try/except ValueError. That asks Python "did this work?" instead
     # of trying to predict every way it could fail.
-    pass
+pass
 
 
 def process_transactions(lines):
