@@ -17,13 +17,23 @@ A: COMMAND,item name,quantity,category
 
 > Will we need to cast any data types?
 - What calculations will need to be performed?
+- Who will be accesing this data? How should it be presented (repr or str)
  ## Assumptions 
 - We are working with a large health clinic and need to treat the data accordingly
 - No value = Missing field
 - Valid Input = Line with 4 fields 
 - Each row = one supply count for one day
+- Priya's team will be accesing this data
+
+> They are not programmers
+- We will need to loop the data to find...
+> Number of types of supplies and their totals each
+
+>The min, med, max and mean
 
 ## Risks
 - Missing values would skew our results
 - duplicate rows may give us an innacurate measure of usage
-- if an int is required in a field but a str is provided it may break the code
+- ^ Can mess up the min, med, max and mean
+- if an int is required in a field but a str is provided it may break the code 
+- 
