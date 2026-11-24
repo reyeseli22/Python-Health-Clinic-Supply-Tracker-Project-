@@ -9,28 +9,41 @@ Run it from your repo's top folder (not from inside this folder):
     python3 starter/inventory.py
 Before your final push you'll rename this folder to analysis/.
 """
+
 import json
+DATA = "/Users/Marcy_Student/Documents/Marcy/Python-Health-Clinic-Supply-Tracker-Project-/data/healthcare_transactions.txt"
+with open(DATA) as f:
+    lines = f.read().splitlines()
+# print(len(lines)) << Checking line count 
+# Lines in data = 430
+LOW_STOCK_LIMIT = 15
 
-
-class YourInventoryItem:
+class Healthcare_Supply:
     """
-    TODO: rename this class to something that fits your scenario, and
-    write a real docstring. What does one of these represent? At minimum
-    you'll need a name and a quantity. Add what your stakeholder asked
-    for, not more and not less.
+    One supply item in the clinic's inventory
+    Tracks the item's name, current quantity and category
+    low_stock = when an items quantity dips to less than 15
     """
+    
+    def __init__(self, name, qty, cat):
+        self.name = name
+        self.qty = qty
+        self.cat = cat
 
-    def __init__(self):
-        # TODO: add your own parameters (self, plus each attribute you're
-        # tracking) and store each one as self.whatever = whatever.
-        pass
 
     def is_low_stock(self):
-        """TODO: write your own docstring."""
-        # TODO: return True or False. Your stakeholder didn't say what
-        # "low" means, so decide, and write down the assumption in
-        # REFLECTION.md's "Assumptions" section.
-        pass
+        """Returns True if an item is below LOW_STOCK_LIMIT"""
+        if self.qty < LOW_STOCK_LIMIT:
+            return True
+        else:
+            if self.qty >= LOW_STOCK_LIMIT:
+                return False 
+
+        
+    # def almost_low_stock(self):
+    #     """Validates if an item is near the low stock limit"""
+    #     if self.qty < 20:
+    #         return True
 
 
 def read_batch_file(filepath):
