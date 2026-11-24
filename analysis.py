@@ -65,8 +65,8 @@ def read_batch_file(filepath):
     ones you write below: what the function does, what it takes, and what
     it returns.
     """
-    with open(filepath) as f:
-        return f.read().splitlines
+    with open(DATA) as f:
+        return f.read().splitlines()
 
 lines = read_batch_file(DATA)
 
