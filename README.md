@@ -30,6 +30,8 @@ A: COMMAND,item name,quantity,category
 > Number of types of supplies and their totals each
 
 >The min, med, max and mean
+# For Now:
+- Low count is lower than 15
 
 ## Risks
 - Missing values would skew our results
