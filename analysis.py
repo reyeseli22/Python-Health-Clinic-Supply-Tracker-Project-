@@ -32,7 +32,7 @@ class Healthcare_Supply:
             if self.qty >= LOW_STOCK_LIMIT:
                 return False 
 
-med_gloves = Healthcare_Supply("Nitrile Exam Gloves (M)",48,"PPE)")
+med_gloves = Healthcare_Supply("Nitrile Exam Gloves (M)",48,"PPE")
 lrg_gloves = Healthcare_Supply("Nitrile Exam Gloves (L)",15,"PPE")
 # Two objects/instances
 # print("Before")
