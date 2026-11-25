@@ -77,7 +77,7 @@ def validate_line(line):
     (False, reason) why it was rejected.
     """
     parts = line.split(",")
-    command = parts[0]
+    command = parts[0].upper
 
     if command == "ADD" and len(parts) == 4:
         try:
@@ -111,14 +111,6 @@ def validate_line(line):
 # print(validate_line("ADD,Elastic Bandages,7,Wound Care,extra,fields")) #Edge-case 1 found by hand line 358: contains 6 fields
 # print(validate_line("SEARCH,")) # Edge-case 2 found by hand line 383 , Only Command in SEARCH all other fields blank
 # print(validate_line("ADD,Saline Solution 500mL,five,Medication")) # Edge-Case 3 found by hand line 147: "five" in qty instead of 5, would cause value error
-# print(validate_line("ADD,Hand Sanitizer 8oz,19,PPE"))
-# print(validate_line("ADD,Compression Stockings,22,Wound Care"))
-# print(validate_line("SEARCH,Surgical Face Masks"))
-# print(validate_line("SEARCH,Urine Test Strips"))
-# print(validate_line("REMOVE,Acetaminophen 500mg,3"))
-# print(validate_line("REMOVE,Face Shields,5"))
-# print lines to test functionality of "validate_line"
-
 
 
 
