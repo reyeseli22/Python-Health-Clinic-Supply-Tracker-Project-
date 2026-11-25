@@ -1,8 +1,3 @@
-
-
-
-
-
 import json
 from wsgiref import validate
 DATA = "/Users/Marcy_Student/Documents/Marcy/Python-Health-Clinic-Supply-Tracker-Project-/data/healthcare_transactions.txt"
@@ -72,7 +67,15 @@ line = read_batch_file(DATA)
 
 
 def validate_line(line):
-    """Decides whether a line is a valid ADD, REMOVE, or SEARCH."""
+    """Decides whether a line is a valid ADD, REMOVE, or SEARCH.
+    Valid lines:
+    - ADD: 4 fields (command, item, qty, category)
+    - REMOVE: 3 fields (command, item, qty)
+    - SEARCH: 2 fields (command, item)
+
+    Returns (True, "Valid Input") for a valid line, or
+    (False, reason) why it was rejected.
+    """
     parts = line.split(",")
     command = parts[0]
 
@@ -85,7 +88,7 @@ def validate_line(line):
             return False, "qty is negative"
         if not parts[1].strip():
             return False, "item name is blank"
-        if not parts[3].strip:
+        if not parts[3].strip():
             return False, "category blank"
 
         
@@ -105,21 +108,18 @@ def validate_line(line):
         return False, "unknown command or wrong field count"
     return True, "Valid Input"
 
-print(validate_line("ADD,Hand Sanitizer 8oz,19,PPE"))
-print(validate_line("ADD,Compression Stockings,22,Wound Care"))
-print(validate_line("SEARCH,Surgical Face Masks"))
-print(validate_line("SEARCH,Urine Test Strips"))
-print(validate_line("REMOVE,Acetaminophen 500mg,3"))
-print(validate_line("REMOVE,Face Shields,5"))
+# print(validate_line("ADD,Elastic Bandages,7,Wound Care,extra,fields")) #Edge-case 1 found by hand line 358: contains 6 fields
+# print(validate_line("SEARCH,")) # Edge-case 2 found by hand line 383 , Only Command in SEARCH all other fields blank
+# print(validate_line("ADD,Saline Solution 500mL,five,Medication")) # Edge-Case 3 found by hand line 147: "five" in qty instead of 5, would cause value error
+# print(validate_line("ADD,Hand Sanitizer 8oz,19,PPE"))
+# print(validate_line("ADD,Compression Stockings,22,Wound Care"))
+# print(validate_line("SEARCH,Surgical Face Masks"))
+# print(validate_line("SEARCH,Urine Test Strips"))
+# print(validate_line("REMOVE,Acetaminophen 500mg,3"))
+# print(validate_line("REMOVE,Face Shields,5"))
+# print lines to test functionality of "validate_line"
 
-"""TODO: write your own docstring. What makes an ADD, REMOVE, or
-SEARCH line valid? What do you return for a valid line, and what for
-    an invalid one?"""
-    # TODO: implement. One choice worth making on purpose: a quantity can
-    # be present but not a number ("five"). Wrap int(quantity) in a
-    # try/except ValueError. That asks Python "did this work?" instead
-    # of trying to predict every way it could fail.
-pass
+
 
 
 def process_transactions(lines):
