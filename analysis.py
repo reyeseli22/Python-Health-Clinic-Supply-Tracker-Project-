@@ -5,8 +5,10 @@ DATA = "/Users/Marcy_Student/Documents/Marcy/Python-Health-Clinic-Supply-Tracker
 
 # print(len(lines)) << Checking line count 
 # Lines in data = 430
-LOW_STOCK_LIMIT = 15
+LOW_STOCK_LIMITS = {"PPE":25, "Wound Care":20, "Medication":20, "Equipment": 15}
+DEFAULT_LIMIT = 15
 
+inventory ={"PPE":{}, "Wound Care":{}, "Medication": {}, "Equipment":{}}
 class Healthcare_Supply:
     """
     One supply item in the clinic's inventory
@@ -22,10 +24,10 @@ class Healthcare_Supply:
 
     def is_low_stock(self):
         """Returns True if an item is below LOW_STOCK_LIMIT"""
-        if self.qty < LOW_STOCK_LIMIT:
+        if self.qty < LOW_STOCK_LIMITS.get(self.cat, DEFAULT_LIMIT):
             return True
         else:
-            if self.qty >= LOW_STOCK_LIMIT:
+            if self.qty >= LOW_STOCK_LIMITS:
                 return False 
 
 med_gloves = Healthcare_Supply("Nitrile Exam Gloves (M)",48,"PPE")
@@ -77,8 +79,8 @@ def validate_line(line):
     (False, reason) why it was rejected.
     """
     parts = line.split(",")
-    command = parts[0].upper
-
+    command = parts[0].upper()
+    #####ADD######
     if command == "ADD" and len(parts) == 4:
         try:
             quantity = int(parts[2])
@@ -90,8 +92,7 @@ def validate_line(line):
             return False, "item name is blank"
         if not parts[3].strip():
             return False, "category blank"
-
-        
+    ######REMOVE#### 
     elif command == "REMOVE" and len(parts) == 3:
         if not parts[1].strip():
             return False, "item name is blank"
@@ -101,6 +102,7 @@ def validate_line(line):
             return False, "qty is not a number"
         if quantity < 0:
             return False, "qty is negative"
+    #######SEARCH######
     elif command == "SEARCH" and len(parts) == 2:
         if not parts[1].strip():
             return False, "item name is blank"
@@ -108,9 +110,9 @@ def validate_line(line):
         return False, "unknown command or wrong field count"
     return True, "Valid Input"
 
-# print(validate_line("ADD,Elastic Bandages,7,Wound Care,extra,fields")) #Edge-case 1 found by hand line 358: contains 6 fields
-# print(validate_line("SEARCH,")) # Edge-case 2 found by hand line 383 , Only Command in SEARCH all other fields blank
-# print(validate_line("ADD,Saline Solution 500mL,five,Medication")) # Edge-Case 3 found by hand line 147: "five" in qty instead of 5, would cause value error
+print(validate_line("ADD,Elastic Bandages,7,Wound Care,extra,fields")) #Edge-case 1 found by hand line 358: contains 6 fields
+print(validate_line("SEARCH,")) # Edge-case 2 found by hand line 383 , Only Command in SEARCH all other fields blank
+print(validate_line("ADD,Saline Solution 500mL,five,Medication")) # Edge-Case 3 found by hand line 147: "five" in qty instead of 5, would cause value error
 
 
 
