@@ -30,12 +30,9 @@ class Healthcare_Supply:
             return False, "In Stock"
 
     def add(self, amount):
-        """increments this item's qty by amount given"""
+        """increase a particular item's qty by amount given"""
         self.qty += amount
-        if not parts.strip:
-            return False, "Qty is Blank"
-        if parts[3].strip() not in LOW_STOCK_LIMITS:
-            return False, "Unknown Category"
+
 
     def remove(self, amount):
         """Decrease qty by amount given
@@ -128,6 +125,8 @@ def validate_line(line):
             return False, "item name is blank"
         if not parts[3].strip():
             return False, "category blank"
+        if parts[3].strip() not in LOW_STOCK_LIMITS:
+            return False, "Unknown Category"
     ######REMOVE#### 
     elif command == "REMOVE" and len(parts) == 3:
         if not parts[1].strip():
@@ -188,14 +187,20 @@ def process_transactions(lines):
             item = find_item(inventory, name)
             if item is None:
                 skipped += 1
-                print(f"Slipped: {line!r} | {reason}")
+                print(f"SKIPPED: {line!r} | Item Not Found")
+                continue
+            ok, reason = item.remove(qty)
+            if not ok:
+                skipped += 1 
+                print(f"SKIPPED: {line!r} | {reason}")
         elif command == "SEARCH":
             item = find_item(inventory, name)
             if item is None:
                 print(f"ITEM NOT FOUND : {name}")
             else: 
                 print(f"ITEM FOUND: {item.name} | {item.cat} | {item.qty}")
-
+    print("Total lines: ", len(lines), "| SKIPPED: ", skipped)
+    return inventory
     # TODO: implement. Loop over the lines, apply each valid one to your
     # collection of items, and print a specific message for each line
     # you skip. Return the collection at the end. The full inventory
@@ -210,9 +215,7 @@ def find_item(items, name):
             return category[name]
     return None
 
-process_transactions(["ADD,Face Shields,46,PPE"])
-print(["SEARCH,Face Shields"]) 
-print(["SEARCH,Unicorn Mask"])
+
 
 
 def export_to_json(items, filepath="inventory.json"):
