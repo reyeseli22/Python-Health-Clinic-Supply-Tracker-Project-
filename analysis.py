@@ -169,11 +169,11 @@ def process_transactions(lines):
 
         parts = line.split(",")
         command = parts[0].strip().upper()
-        name = parts[1]
+        name = parts[1].strip()
         ## every valid command has atleast a command and name split by ","###
         if command == "ADD":
             qty = int(parts[2])
-            cat = parts[3]
+            cat = parts[3].strip()
             if cat not in inventory: 
                 skipped +=1 
                 print(f"SKIPPED: {line!r} | Unknown category")
