@@ -8,7 +8,7 @@ DATA = "/Users/Marcy_Student/Documents/Marcy/Python-Health-Clinic-Supply-Tracker
 LOW_STOCK_LIMITS = {"PPE":25, "Wound Care":20, "Medication":20, "Equipment": 15}
 DEFAULT_LIMIT = 15
 
-inventory ={"PPE":{}, "Wound Care":{}, "Medication": {}, "Equipment":{}}
+inventory = {"PPE":{}, "Wound Care":{}, "Medication": {}, "Equipment":{}}
 class Healthcare_Supply:
     """
     One supply item in the clinic's inventory
@@ -23,27 +23,58 @@ class Healthcare_Supply:
 
 
     def is_low_stock(self):
-        """Returns True if an item is below LOW_STOCK_LIMIT"""
+        """Returns True if an item is below a particular category's limit"""
         if self.qty < LOW_STOCK_LIMITS.get(self.cat, DEFAULT_LIMIT):
-            return True
-        else:
-            if self.qty >= LOW_STOCK_LIMITS:
-                return False 
+            return True, "Low Stock"
+        else: 
+            return False, "In Stock"
+
+    def add(self, amount):
+        """increments this item's qty by amount given"""
+        self.qty += amount
+        if not parts.strip:
+            return False, "Qty is Blank"
+        if parts[3].strip() not in LOW_STOCK_LIMITS:
+            return False, "Unknown Category"
+
+    def remove(self, amount):
+        """Decrease qty by amount given
+        Returns: True, reason on a valid add
+        Returns False, reason on invalid add
+        if amount is more than in stock, qty will remain unchanged"""
+        if amount > self.qty:
+            return False, "Removed More than in stock"
+        self.qty -= amount
+        return True, "Removed"
+
 
 med_gloves = Healthcare_Supply("Nitrile Exam Gloves (M)",48,"PPE")
 lrg_gloves = Healthcare_Supply("Nitrile Exam Gloves (L)",15,"PPE")
+ibuprofen_pills = Healthcare_Supply("Ibuprofen 200mg", 14, "Medication")
 # Two objects/instances
 
 # print("Before")
 # print("Medium Gloves: ", med_gloves.qty, med_gloves.is_low_stock())
 # print("Large Gloves: ", lrg_gloves.qty, lrg_gloves.is_low_stock())
-
-# lrg_gloves.qty = 5
-
+# print("Ibuprofen",ibuprofen_pills.qty, ibuprofen_pills.is_low_stock())
+# lrg_gloves.qty = 26
+# ibuprofen_pills.qty = 21
+#lrg_gloves.add(10)
+# print(lrg_gloves.remove(100))   # (False, 'removed `qmore than in stock')
+# print(lrg_gloves.remove(6))     # (True, 'Removed')
 # print()
 # print("After")
 # print("Medium Gloves: ", med_gloves.qty, med_gloves.is_low_stock())
 # print("Large Gloves: ", lrg_gloves.qty, lrg_gloves.is_low_stock())
+# print("Ibuprofen",ibuprofen_pills.qty, ibuprofen_pills.is_low_stock())
+# print()
+# print("after add")
+# lrg_gloves.add(10)
+# print(lrg_gloves.qty)            
+# print(lrg_gloves.remove(100))    
+# print(lrg_gloves.qty)             
+# print(lrg_gloves.remove(6))       
+# print(lrg_gloves.qty)             
 # Testing methods
 
 
@@ -79,7 +110,12 @@ def validate_line(line):
     (False, reason) why it was rejected.
     """
     parts = line.split(",")
-    command = parts[0].upper()
+    if not line.strip():
+        return False, "Blank Line"
+    if parts[0] != parts[0].strip().upper(): # catches non-capitalized commands and commands with spaces around them
+        print("Fixed lowercase command: ", repr(line)) 
+    
+    command = parts[0].upper() #  lowercase commands are capitalized
     #####ADD######
     if command == "ADD" and len(parts) == 4:
         try:
@@ -110,25 +146,73 @@ def validate_line(line):
         return False, "unknown command or wrong field count"
     return True, "Valid Input"
 
-print(validate_line("ADD,Elastic Bandages,7,Wound Care,extra,fields")) #Edge-case 1 found by hand line 358: contains 6 fields
-print(validate_line("SEARCH,")) # Edge-case 2 found by hand line 383 , Only Command in SEARCH all other fields blank
-print(validate_line("ADD,Saline Solution 500mL,five,Medication")) # Edge-Case 3 found by hand line 147: "five" in qty instead of 5, would cause value error
+# print(validate_line("ADD,Elastic Bandages,7,Wound Care,extra,fields")) #Edge-case 1 found by hand line 358: contains 6 fields
+# print(validate_line("SEARCH,")) # Edge-case 2 found by hand line 383 , Only Command in SEARCH all other fields blank
+# print(validate_line("ADD,Saline Solution 500mL,five,Medication")) # Edge-Case 3 found by hand line 147: "five" in qty instead of 5, would cause value error
 
+# for number, line in enumerate(line, start=1):
+#     is_valid, reason = validate_line(line)
+#     if not is_valid:
+#         print(number, repr(line), reason).  <<< Test Scan Loop: lists every rejected line and its line number 
 
 
 def process_transactions(lines):
-    """TODO: write your own docstring."""
+    """Loops over each line
+    Applies each valid line to inventory with relevant command
+    Skips invalid lines and counts total skipped lines"""
+    skipped = 0
+    for line in lines:
+        is_valid, reason = validate_line(line)
+        if not is_valid:
+            skipped += 1
+            print(f"SKIPPED: {line} | {reason}")
+            continue
+
+        parts = line.split(",")
+        command = parts[0].strip().upper()
+        name = parts[1]
+        ## every valid command has atleast a command and name split by ","###
+        if command == "ADD":
+            qty = int(parts[2])
+            cat = parts[3]
+            if cat not in inventory: 
+                skipped +=1 
+                print(f"SKIPPED: {line!r} | Unknown category")
+                continue
+            if name in inventory[cat]:
+                inventory[cat][name].add(qty)
+            else:
+                inventory[cat][name] = Healthcare_Supply(name, qty, cat)
+        elif command == "REMOVE":
+            qty = int(parts[2])
+            item = find_item(inventory, name)
+            if item is None:
+                skipped += 1
+                print(f"Slipped: {line!r} | {reason}")
+        elif command == "SEARCH":
+            item = find_item(inventory, name)
+            if item is None:
+                print(f"ITEM NOT FOUND : {name}")
+            else: 
+                print(f"ITEM FOUND: {item.name} | {item.cat} | {item.qty}")
+
     # TODO: implement. Loop over the lines, apply each valid one to your
     # collection of items, and print a specific message for each line
     # you skip. Return the collection at the end. The full inventory
     # printout is print_summary's job, not this function's.
-    pass
+
 
 
 def find_item(items, name):
-    """TODO: write your own docstring."""
-    # TODO: implement
-    pass
+    """TODO: Returns the item. None if not found """
+    for category in inventory.values():
+        if name in category:
+            return category[name]
+    return None
+
+process_transactions(["ADD,Face Shields,46,PPE"])
+print(["SEARCH,Face Shields"]) 
+print(["SEARCH,Unicorn Mask"])
 
 
 def export_to_json(items, filepath="inventory.json"):
