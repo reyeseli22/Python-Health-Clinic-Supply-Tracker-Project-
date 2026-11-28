@@ -46,7 +46,28 @@ A: COMMAND,item name,quantity,category
 - remove on that is more than whats in stock will result in negatives
 - Typos may result in skipped lines and or innacurate results
 - Because there is no category on remove or search we will have to match its cat with an earlier add to validate
+## Edge-Cases 
+Commands: 
+- lower case command, should be upper case 
+- extra letters ex: "ADDD"
+- remove with a qty more than whats in stock will cause a negative value
 
+- white space around values creates separate objects  
+# Edge cases found 
+25 '' Blank Line
+95 '' Blank Line
+141 'ADD,Gauze Pads 4x4,,Wound Care' qty is not a number
+147 'ADD,Saline Solution 500mL,five,Medication' qty is not a number
+155 'ADD,Medical Tape,N/A,Wound Care' qty is not a number
+Fixed lowercase command:  'add,Surgical Face Masks,5,PPE'
+328 'ADDD,Blood Pressure Cuffs,5,Equipment' unknown command or wrong field count
+358 'ADD,Elastic Bandages,7,Wound Care,extra,fields' unknown command or wrong field count
+374 'REMOVE,Acetaminophen 500mg' unknown command or wrong field count
+383 'SEARCH,' item name is blank
+SKIPPED: 'REMOVE,Another Fake Item,1' | Item Not Found
+SKIPPED: 'REMOVE,Nonexistent Item Nobody Ever Added,3' | Item Not Found
+SKIPPED: 'REMOVE,Alcohol Prep Pads,9999' | Removed More than in stock
+WHITESPACE REMOVED 'ADD,  Hand Sanitizer 8oz  ,7,PPE' padded whitespace
 ## Plan 
 1. Read the file into a list of lines
 2. Validate each line 
@@ -62,3 +83,8 @@ A: COMMAND,item name,quantity,category
 ## What will hold the data?
 # Because we will need to look up an item by name we will use a dict {}
 - stock = {} >> item name, current count
+
+
+
+## Reflections 
+- A search for something that isn't there isn't a bad line, it's a valid question with the answer "not found." But a REMOVE for a missing item is different, since it couldn't do its job.

@@ -87,7 +87,7 @@ def read_batch_file(filepath):
     """
     Reads the file, and returns a list of lines
     """
-    with open(DATA) as f:
+    with open(filepath) as f:
         return f.read().splitlines()
 lines = read_batch_file(DATA)
 
@@ -202,10 +202,7 @@ def process_transactions(lines, inventory):
                 print(f"ITEM FOUND: {item.name} | {item.cat} | {item.qty}")
     print("TOTAL LINES: ", len(lines), "| SKIPPED: ", skipped)
     return inventory
-    # TODO: implement. Loop over the lines, apply each valid one to your
-    # collection of items, and print a specific message for each line
-    # you skip. Return the collection at the end. The full inventory
-    # printout is print_summary's job, not this function's.
+
 
 
 
