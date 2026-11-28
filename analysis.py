@@ -40,7 +40,7 @@ class Healthcare_Supply:
         Returns False, reason on invalid add
         if amount is more than in stock, qty will remain unchanged"""
         if amount > self.qty:
-            return False, "Removed More than in stock"
+            return False, "removed more than in stock"
         self.qty -= amount
         return True, "Removed"
 
@@ -160,6 +160,7 @@ def process_transactions(lines):
     Applies each valid line to inventory with relevant command
     Skips invalid lines and counts total skipped lines"""
     skipped = 0
+    inventory = {"PPE":{}, "Wound Care":{}, "Medication": {}, "Equipment":{}}
     for line in lines:
         is_valid, reason = validate_line(line)
         if not is_valid:
@@ -168,6 +169,8 @@ def process_transactions(lines):
             continue
 
         parts = line.split(",")
+        if parts[1] != parts[1].strip() or (len(parts) == 4 and parts[3] != parts[3].strip()):
+            print(f"Whitespace removed {line!r}") # catches lines with whitespace and fixes them as to not mess up counts quietly
         command = parts[0].strip().upper()
         name = parts[1].strip()
         ## every valid command has atleast a command and name split by ","###
