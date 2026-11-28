@@ -8,7 +8,7 @@ DATA = "/Users/Marcy_Student/Documents/Marcy/Python-Health-Clinic-Supply-Tracker
 LOW_STOCK_LIMITS = {"PPE":25, "Wound Care":20, "Medication":20, "Equipment": 15}
 DEFAULT_LIMIT = 15
 
-inventory = {"PPE":{}, "Wound Care":{}, "Medication": {}, "Equipment":{}}
+
 class Healthcare_Supply:
     """
     One supply item in the clinic's inventory
@@ -154,23 +154,22 @@ def validate_line(line):
 #     if not is_valid:
 #         print(number, repr(line), reason).  <<< Test Scan Loop: lists every rejected line and its line number 
 
-
-def process_transactions(lines):
+inventory = {"PPE":{}, "Wound Care":{}, "Medication": {}, "Equipment":{}}
+def process_transactions(lines, inventory):
     """Loops over each line
     Applies each valid line to inventory with relevant command
     Skips invalid lines and counts total skipped lines"""
     skipped = 0
-    inventory = {"PPE":{}, "Wound Care":{}, "Medication": {}, "Equipment":{}}
     for line in lines:
         is_valid, reason = validate_line(line)
         if not is_valid:
             skipped += 1
-            print(f"SKIPPED: {line} | {reason}")
+            print(f"SKIPPED: {line!r} | {reason}")
             continue
 
         parts = line.split(",")
         if parts[1] != parts[1].strip() or (len(parts) == 4 and parts[3] != parts[3].strip()):
-            print(f"Whitespace removed {line!r}") # catches lines with whitespace and fixes them as to not mess up counts quietly
+            print(f"WHITESPACE REMOVED {line!r}") # catches lines with whitespace and fixes them as to not mess up counts quietly
         command = parts[0].strip().upper()
         name = parts[1].strip()
         ## every valid command has atleast a command and name split by ","###
@@ -179,7 +178,7 @@ def process_transactions(lines):
             cat = parts[3].strip()
             if cat not in inventory: 
                 skipped +=1 
-                print(f"SKIPPED: {line!r} | Unknown category")
+                print(f"SKIPPED: {line!r} | UNKNOWN CATEGORY")
                 continue
             if name in inventory[cat]:
                 inventory[cat][name].add(qty)
@@ -190,7 +189,7 @@ def process_transactions(lines):
             item = find_item(inventory, name)
             if item is None:
                 skipped += 1
-                print(f"SKIPPED: {line!r} | Item Not Found")
+                print(f"SKIPPED: {line!r} | ITEM NOT FOUND")
                 continue
             ok, reason = item.remove(qty)
             if not ok:
@@ -202,7 +201,7 @@ def process_transactions(lines):
                 print(f"ITEM NOT FOUND : {name}")
             else: 
                 print(f"ITEM FOUND: {item.name} | {item.cat} | {item.qty}")
-    print("Total lines: ", len(lines), "| SKIPPED: ", skipped)
+    print("TOTAL LINES: ", len(lines), "| SKIPPED: ", skipped)
     return inventory
     # TODO: implement. Loop over the lines, apply each valid one to your
     # collection of items, and print a specific message for each line
