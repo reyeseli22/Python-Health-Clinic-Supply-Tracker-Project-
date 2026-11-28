@@ -89,8 +89,7 @@ def read_batch_file(filepath):
     """
     with open(DATA) as f:
         return f.read().splitlines()
-
-line = read_batch_file(DATA)
+lines = read_batch_file(DATA)
 
 # print(len(lines))
 # Testing if read_batch_file reads data as expected 
@@ -210,8 +209,9 @@ def process_transactions(lines, inventory):
 
 
 
-def find_item(items, name):
-    """TODO: Returns the item. None if not found """
+
+def find_item(inventory, name):
+    """ Returns the item with this name. None if not found """
     for category in inventory.values():
         if name in category:
             return category[name]
@@ -235,7 +235,7 @@ def print_summary(items):
 
 
 # TODO: point this at the data file for the scenario you chose.
-lines = read_batch_file("data/____________.txt")
-items = process_transactions(lines)
+lines = read_batch_file("/Users/Marcy_Student/Documents/Marcy/Python-Health-Clinic-Supply-Tracker-Project-/data/healthcare_transactions.txt")
+items = process_transactions(lines, inventory)
 print_summary(items)
 export_to_json(items)
